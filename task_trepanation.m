@@ -9,7 +9,7 @@ Ts_trepanation = zeros(4, 4, length(t));
 
 %hold on;
 for i=1:length(t)
-    a = (t(i)/t(end))*(2*pi) + pi;
+    a = (t(i)/t(end))*(2*pi);
     c = [cos(a)*radius
          sin(a)*radius
          0];
@@ -21,20 +21,38 @@ end
 %hold off;
 %axis('equal');
 
-view(15, 20);
-axis([0.4, 1.2, -0.4, 0.4, 0.9, 1.7])
-
-
-%% Trajectory 1: qn -> trepanation start
+%% Trajectory 1: qn -> trepanation pre
 T_trepanation_start = Ts_trepanation(:, :, 1);
-q_trepanation_start = p560.ikine6s(T_trepanation_start, 'run');
-traj_1 = jtraj(qn, q_trepanation_start, t);
+T_trepanation_pre = T_trepanation_start * transl(0, 0, -0.1);
+q_trepanation_pre = p560.ikine6s(T_trepanation_pre, 'run');
+traj_1 = jtraj(qn, q_trepanation_pre, t);
 
 p560.plot(traj_1, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
 %p560.plot3d(traj_1, 'fps', 60, 'trail', {'k', 'LineWidth', 2})
 
-%% Trajectory 2: trepanation
-traj_2 = p560.ikine6s(Ts_trepanation, 'run');
+%% Trajectory 2: trepanation pre -> trepanation start
+T_traj_2 = ctraj(T_trepanation_pre, T_trepanation_start, length(t)); 
+traj_2 = p560.ikine6s(T_traj_2, 'run');
 
-p560.plot(traj_2, 'loop', 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
-%p560.plot3d(traj_2, 'loop', 'fps', 60, 'trail', {'k', 'LineWidth', 2})
+p560.plot(traj_2, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
+%p560.plot3d(traj_2, 'fps', 60, 'trail', {'k', 'LineWidth', 2})
+
+%% Trajectory 3: trepanation
+traj_3 = p560.ikine6s(Ts_trepanation, 'run');
+n = 2; % number of loops
+traj_3 = repmat(traj_3, n, 1);
+
+p560.plot(traj_3, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
+%p560.plot3d(traj_3, 'loop', 'fps', 60, 'trail', {'k', 'LineWidth', 2})
+
+%% Trajectory 2R: trepanation start -> trepanation pre
+traj_2r = flipud(traj_2);
+
+p560.plot(traj_2r, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
+%p560.plot3d(traj_2r, 'fps', 60, 'trail', {'k', 'LineWidth', 2})
+
+%% Trajectory 1R: trepanation pre -> qn
+traj_1r = flipud(traj_1);
+
+p560.plot(traj_1r, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
+%p560.plot3d(traj_1r, 'fps', 60, 'trail', {'k', 'LineWidth', 2})
