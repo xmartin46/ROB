@@ -5,10 +5,13 @@ tumor = pointWR;
 t = [0:0.05:5]';
 
 [mean_radius, radiusX, radiusY, radiusZ] = compute_radius(tumor)
+radiusX = radiusX * 0.7071 - 0.004; %1/sqrt(2)
+radiusY = radiusY * 0.7071 - 0.004; %1/sqrt(2)
+radiusZ = radiusZ * 0.7071 - 0.004; %1/sqrt(2)
 % radiusX = radiusX * 1000; radiusY = radiusY * 1000; radiusZ = radiusZ * 1000;
-vX = (radiusX)/4;
-vY = (radiusY)/4;
-vZ = (radiusZ)/4;
+vX = 0.004;
+vY = 0.004;
+vZ = 0.004;
 radius = mean_radius ./ 2;
 tumor_center = mean(tumor(:, :));
 T_trepanation = transl(tumor_center) * transl(0.06, 0, 0) * troty(70, 'deg');
@@ -34,21 +37,38 @@ diameterZ = radiusZ * 2;
 % end
 
 a = 1;
-for i = 1:(ceil((diameterX*1000 - 8)/4))
-   for j = 1:((ceil((diameterY*1000 - 8)/4)) + 1)
-        for k = 1:(ceil((diameterZ*1000 - 8)/4))
-            burningPoints(a, :) = tumor_center + [-radiusX+i*vX -radiusY+j*vY -radiusZ+k*vZ];
+t_x = (ceil(diameterX/0.004));
+t_y = (ceil(diameterY/0.004));
+t_z = (ceil(diameterZ/0.004));
+
+for i = 0:t_x
+   for j = 0:t_y
+        for k = 0:t_z
+            %if (mod(j, 2) ~= mod(i, 2))
+            if (mod(j, 2) == mod(i, 2))
+                offs_z = -radiusZ+k*vZ;
+            else
+                offs_z = -radiusZ+(t_z-k)*vZ;
+            end
+            
+            if (mod(i, 2)==0)
+                offs_y = -radiusY+j*vY;
+            else
+                offs_y = -radiusY+(t_y-j)*vY;
+                %offs_y = -radiusY+j*vY;
+            end
+            burningPoints(a, :) = tumor_center + [-radiusX+i*vX offs_y offs_z];
             a = a + 1;
        end
     end
 end
 
-% % scatter3(pointsX(:, 1), pointsX(:, 2), pointsX(:, 3), 12, 'k', 'filled')
-% scatter3(burningPoints(:, 1), burningPoints(:, 2), burningPoints(:, 3), 12, 'k', 'filled')
-% hold on;
-% % scatter3(pointsY(:, 1), pointsY(:, 2), pointsY(:, 3), 12, 'k', 'filled')
-% % scatter3(pointsZ(:, 1), pointsZ(:, 2), pointsZ(:, 3), 12, 'k', 'filled')
-% scatter3(tumor(:, 1), tumor(:, 2), tumor(:, 3), 12, 'r', 'filled')
+% scatter3(pointsX(:, 1), pointsX(:, 2), pointsX(:, 3), 12, 'k', 'filled')
+%scatter3(burningPoints(:, 1), burningPoints(:, 2), burningPoints(:, 3), 12, 'k', 'filled')
+hold on;
+% scatter3(pointsY(:, 1), pointsY(:, 2), pointsY(:, 3), 12, 'k', 'filled')
+% scatter3(pointsZ(:, 1), pointsZ(:, 2), pointsZ(:, 3), 12, 'k', 'filled')
+scatter3(tumor(:, 1), tumor(:, 2), tumor(:, 3), 12, 'r', 'filled')
 
 for i=1:length(t)
     a = (t(i)/t(end))*(2*pi);
@@ -104,7 +124,7 @@ for i = 1:size(burningPoints)
 end
 traj_5 = p560.ikine6s(prova, 'run');
 
-p560.plot(traj_5, 'fps', 60, 'trail', {'g', 'LineWidth', 1}, 'zoom', 2)
+p560.plot(traj_5, 'fps', 60, 'trail', {'r', 'LineWidth', 1}, 'zoom', 2)
 %p560.plot3d(traj_5, 'loop', 'fps', 60, 'trail', {'k', 'LineWidth', 2})
 
 %% Trajectory 4R: burningLaser end -> trepanation start
