@@ -1,7 +1,7 @@
 % Burn the tumor with a laser tool. The hole is no necessary to be big, the surgeons forecast half
 % radius of the tumor equivalent sphere. To burn the tumor, assume the tool irradiate heat like a
 % sphere shape of 4mm radius. Take care not burn healthy biological tissues.
-
+tumor = pointWR;
 t = [0:0.05:5]';
 
 [mean_radius, radiusX, radiusY, radiusZ] = compute_radius(tumor)
@@ -33,8 +33,6 @@ diameterZ = radiusZ * 2;
 %     pointsZ(k, :) = tumor_center + [0 0 -radiusZ+k*vZ];
 % end
 
-result = zeros(7*7*7, 3);
-
 a = 1;
 for i = 1:(ceil((diameterX*1000 - 8)/4))
    for j = 1:((ceil((diameterY*1000 - 8)/4)) + 1)
@@ -45,12 +43,12 @@ for i = 1:(ceil((diameterX*1000 - 8)/4))
     end
 end
 
-% scatter3(pointsX(:, 1), pointsX(:, 2), pointsX(:, 3), 12, 'k', 'filled')
-scatter3(burningPoints(:, 1), burningPoints(:, 2), burningPoints(:, 3), 12, 'k', 'filled')
-hold on;
-% scatter3(pointsY(:, 1), pointsY(:, 2), pointsY(:, 3), 12, 'k', 'filled')
-% scatter3(pointsZ(:, 1), pointsZ(:, 2), pointsZ(:, 3), 12, 'k', 'filled')
-scatter3(tumor(:, 1), tumor(:, 2), tumor(:, 3), 12, 'r', 'filled')
+% % scatter3(pointsX(:, 1), pointsX(:, 2), pointsX(:, 3), 12, 'k', 'filled')
+% scatter3(burningPoints(:, 1), burningPoints(:, 2), burningPoints(:, 3), 12, 'k', 'filled')
+% hold on;
+% % scatter3(pointsY(:, 1), pointsY(:, 2), pointsY(:, 3), 12, 'k', 'filled')
+% % scatter3(pointsZ(:, 1), pointsZ(:, 2), pointsZ(:, 3), 12, 'k', 'filled')
+% scatter3(tumor(:, 1), tumor(:, 2), tumor(:, 3), 12, 'r', 'filled')
 
 for i=1:length(t)
     a = (t(i)/t(end))*(2*pi);
@@ -88,6 +86,36 @@ traj_3 = repmat(traj_3, n, 1);
 
 p560.plot(traj_3, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
 %p560.plot3d(traj_3, 'loop', 'fps', 60, 'trail', {'k', 'LineWidth', 2})
+
+%% Trajectory 4: trepanation start -> burningLaser start 
+burningLaser_start = burningPoints(1, :);
+prova = T_trepanation_start;
+prova(1:3, 4) = burningLaser_start;
+T_traj_4 = ctraj(T_trepanation_start, prova, length(t)); 
+traj_4 = p560.ikine6s(T_traj_4, 'run');
+
+p560.plot(traj_4, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
+%p560.plot3d(traj_2, 'fps', 60, 'trail', {'k', 'LineWidth', 2})
+
+%% Trajectory 5: burningLaser
+for i = 1:size(burningPoints)
+    prova(:, :, i) = T_trepanation_start;
+    prova(1:3, 4, i) = burningPoints(i, :);
+end
+traj_5 = p560.ikine6s(prova, 'run');
+
+p560.plot(traj_5, 'fps', 60, 'trail', {'g', 'LineWidth', 1}, 'zoom', 2)
+%p560.plot3d(traj_5, 'loop', 'fps', 60, 'trail', {'k', 'LineWidth', 2})
+
+%% Trajectory 4R: burningLaser end -> trepanation start
+burningLaser_end = burningPoints(end, :);
+prova = T_trepanation_start;
+prova(1:3, 4) = burningLaser_end;
+T_traj_4r = ctraj(prova, T_trepanation_start, length(t)); 
+traj_4r = p560.ikine6s(T_traj_4r, 'run');
+
+p560.plot(traj_4r, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
+%p560.plot3d(traj_4r, 'fps', 60, 'trail', {'k', 'LineWidth', 2})
 
 %% Trajectory 2R: trepanation start -> trepanation pre
 traj_2r = flipud(traj_2);
