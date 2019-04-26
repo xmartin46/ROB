@@ -28,14 +28,12 @@ q_trepanation_pre = p560.ikine6s(T_trepanation_pre, 'run');
 traj_1 = jtraj(qn, q_trepanation_pre, t);
 
 p560.plot(traj_1, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
-%p560.plot3d(traj_1, 'fps', 60, 'trail', {'k', 'LineWidth', 2})
 
 %% Trajectory 2: trepanation pre -> trepanation start
 T_traj_2 = ctraj(T_trepanation_pre, T_trepanation_start, length(t)); 
 traj_2 = p560.ikine6s(T_traj_2, 'run');
 
 p560.plot(traj_2, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
-%p560.plot3d(traj_2, 'fps', 60, 'trail', {'k', 'LineWidth', 2})
 
 %% Trajectory 3: trepanation
 traj_3 = p560.ikine6s(Ts_trepanation, 'run');
@@ -43,16 +41,13 @@ n = 2; % number of loops
 traj_3 = repmat(traj_3, n, 1);
 
 p560.plot(traj_3, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
-%p560.plot3d(traj_3, 'loop', 'fps', 60, 'trail', {'k', 'LineWidth', 2})
 
 %% Trajectory 2R: trepanation start -> trepanation pre
 traj_2r = flipud(traj_2);
 
 p560.plot(traj_2r, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
-%p560.plot3d(traj_2r, 'fps', 60, 'trail', {'k', 'LineWidth', 2})
 
 %% Trajectory 1R: trepanation pre -> qn
 traj_1r = flipud(traj_1);
 
 p560.plot(traj_1r, 'fps', 60, 'trail', {'k', 'LineWidth', 2}, 'zoom', 2)
-%p560.plot3d(traj_1r, 'fps', 60, 'trail', {'k', 'LineWidth', 2})
