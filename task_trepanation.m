@@ -1,13 +1,14 @@
+% This set of instructions perform a trepanation (a circle with a 45 degree
+% angle of incidence).
+
 t = [0:0.05:5]';
 
-% Radi. Ha de ser una mica més petit que el radi del tumor.
 radius = compute_radius(tumor) - 0.002;
 tumor_center = mean(tumor(:, :));
 T_trepanation = transl(tumor_center) * transl(0.06, 0, 0) * troty(70, 'deg');
 
 Ts_trepanation = zeros(4, 4, length(t));
 
-%hold on;
 for i=1:length(t)
     a = (t(i)/t(end))*(2*pi);
     c = [cos(a)*radius
@@ -16,10 +17,7 @@ for i=1:length(t)
     Ts_trepanation(:,:,i) = transl(c) *  trotz(a+pi)* troty(-45, 'deg') * trotx(180, 'deg');
     Ts_trepanation(:,:,i) = T_trepanation * Ts_trepanation(:,:,i);
     Ts_trepanation(:,:,i) = Ts_trepanation(:,:,i);
-    %trplot(Ts_trepanation(:,:,i), 'length', 0.5, 'color', 'k')
 end
-%hold off;
-%axis('equal');
 
 %% Trajectory 1: qn -> trepanation pre
 T_trepanation_start = Ts_trepanation(:, :, 1);

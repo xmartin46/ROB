@@ -1,5 +1,7 @@
+% This set of instructions change the tool being used (by going to the
+% table, simulating it picks a tool, and returning to the default pose).
+
 tool_pos = toolt_size./2;
-%tool_pos(3) = tool_pos(3)+0.2;
 
 t1 = [0:0.05:5];
 t2 = [0:0.05:0.5];
