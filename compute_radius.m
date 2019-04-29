@@ -2,8 +2,8 @@ function [mean_radius, radiusX, radiusY, radiusZ] = compute_radius(tumor)
     % X
     x_max = find(tumor(:, 1) == max(tumor(:, 1)));
     x_min = find(tumor(:, 1) == min(tumor(:, 1)));
-    x = tumor(x_max(3), 1);
-    y = tumor(x_min(2), 1);
+    x = tumor(x_max(1), 1);
+    y = tumor(x_min(1), 1);
 %     x1 = [x(1, 1) y(1, 1)];
 %     y1 = [x(1, 2) y(1, 2)];
 %     z1 = [x(1, 3) y(1, 3)];
