@@ -27,8 +27,7 @@ for index=i:522 % Use the for loop to see a movie
     plot (trajec(:,1), trajec(:,2), 'r.','LineWidth',1.5) % Plotting the trajectory
     Robot_tr=transl(trajec(index,1),trajec(index,2),0)*trotz(mod(trajec(index,3)+pi/2,2*pi))*Robot;% moving the robot
     patch(Robot_tr(1,:), Robot_tr(2,:),'b');
-    plot_ellipse(pk.signals.values(1:2,1:2,index),[trajec(index,1),
-    trajec(index,2)],'g'); % Plotting the covariance matrix
+    plot_ellipse(pk.signals.values(1:2,1:2,index),[trajec(index,1), trajec(index,2)],'g'); % Plotting the covariance matrix
     pause(0.01);
     clf
 end
