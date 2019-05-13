@@ -16,7 +16,7 @@ function [ xs, ys, thetas ] = pose_integration( x_ini, y_ini, theta_ini, wheel_l
              0          (0.5*pi/180)^2];
         
         V = randn(1, 2) * V;
-        V=[0 0];
+%         V=[0 0];
          
         xs(i) = xs(i-1) + (delta_d + V(1))*cos(thetas(i-1) + delta_th + V(2));
         ys(i) = ys(i-1) + (delta_d + V(1))*sin(thetas(i-1) + delta_th + V(2));
