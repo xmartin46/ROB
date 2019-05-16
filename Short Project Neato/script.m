@@ -43,7 +43,7 @@ for index=2:steps
         end
     end
 
-    if (mod(index, 32) == 0)
+    if (mod(index, 64) == 0)
         calib_flag = true;
     end
     
@@ -54,6 +54,8 @@ for index=2:steps
         xs(index) = xs(index) - e_x;
         ys(index) = ys(index) - e_y;
         thetas(index) = thetas(index) + e_theta;
+        
+        pk.signals.values(1:2,1:2,:) = pk.signals.values(1:2,1:2,:)-pk.signals.values(1:2,1:2,index)*0.9;
     end
     
     Robot_tr=transl(xs(1,index),ys(1,index),0)*trotz(mod(thetas(1,index),2*pi))*Robot;% moving the robot
