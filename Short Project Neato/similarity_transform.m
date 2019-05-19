@@ -10,7 +10,6 @@ function [tx, ty, theta] = similarity_transform(LandMarks, CalculatedLandMarks)
     end
 
     X = inv((A'*A))*A'*B;
-    %X = (A'*A)\(*A'*B);
     tx = X(3);
     ty= X(4);
     theta = atan2(X(2),X(1));
